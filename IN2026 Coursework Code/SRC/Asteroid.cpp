@@ -2,6 +2,9 @@
 #include "GameUtil.h"
 #include "Asteroid.h"
 #include "BoundingShape.h"
+#include "AnimationManager.h"
+#include "Animation.h"
+#include "BoundingSphere.h"
 
 Asteroid::Asteroid(void) : GameObject("Asteroid")
 {
@@ -29,5 +32,24 @@ bool Asteroid::CollisionTest(shared_ptr<GameObject> o)
 
 void Asteroid::OnCollision(const GameObjectList& objects)
 {
+	mCount--;
 	mWorld->FlagForRemoval(GetThisPtr());
+	CreateAsteroid(mScale, mShape);
+	CreateAsteroid(mScale, mShape);
+	mScale /= 2;
+	mShape /= 2;
+}
+
+void Asteroid::CreateAsteroid(float scale, float shape) {
+	Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("asteroid1");
+	shared_ptr<Sprite> asteroid_sprite
+		= make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+	asteroid_sprite->SetLoopAnimation(true);
+	shared_ptr<Asteroid> asteroid = make_shared<Asteroid>();
+	asteroid->SetBoundingShape(make_shared<BoundingSphere>(asteroid->GetThisPtr(), shape));
+	asteroid->SetSprite(asteroid_sprite);
+	asteroid->SetScale(scale);
+	asteroid->mScale = scale/2;
+	asteroid->mShape = shape/2;
+	mWorld->AddObject(asteroid);
 }

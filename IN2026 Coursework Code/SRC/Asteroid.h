@@ -6,11 +6,16 @@
 class Asteroid : public GameObject
 {
 public:
+	int mCount = 2;
+	float mScale = 0.1f;
+	float mShape = 5.0f;
 	Asteroid(void);
 	~Asteroid(void);
 
 	bool CollisionTest(shared_ptr<GameObject> o);
 	void OnCollision(const GameObjectList& objects);
+
+	void CreateAsteroid(float scale, float shape);
 };
 
 #endif
