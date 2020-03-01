@@ -19,7 +19,7 @@ Asteroids::Asteroids(int argc, char *argv[])
 	: GameSession(argc, argv)
 {
 	mLevel = 0;
-	mAsteroidCount = 0;
+	mAsteroidCount = 7;
 }
 
 /** Destructor. */
@@ -158,12 +158,13 @@ void Asteroids::OnTimer(int value)
 		mGameWorld->AddObject(mSpaceship);
 	}
 
-	//if (value == START_NEXT_LEVEL)
-	//{
-	//	mLevel++;
-	//	int num_asteroids = 10 + 2 * mLevel;
-	//	CreateAsteroids(num_asteroids);
-	//}
+	if (value == START_NEXT_LEVEL)
+	{
+	mLevel++;
+	// made the game a bit easier since the splitting asteroids make stuff really hard
+	int num_asteroids = 2*mLevel;
+	CreateAsteroids(num_asteroids);
+	}
 
 	if (value == SHOW_GAME_OVER)
 	{
@@ -195,7 +196,8 @@ shared_ptr<GameObject> Asteroids::CreateSpaceship()
 
 void Asteroids::CreateAsteroids(const uint num_asteroids)
 {
-	mAsteroidCount = num_asteroids;
+	//since each asteroid now splits into 7 asteroids in total we have to multiply this number by seven to check the world correctly for the next level
+	mAsteroidCount = num_asteroids * 7;
 	for (uint i = 0; i < num_asteroids; i++)
 	{
 		Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("asteroid1");

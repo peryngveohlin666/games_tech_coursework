@@ -18,6 +18,8 @@ Asteroid::Asteroid(void) : GameObject("Asteroid")
 	mVelocity.z = 0.0;
 }
 
+
+
 Asteroid::~Asteroid(void)
 {
 }
@@ -32,15 +34,22 @@ bool Asteroid::CollisionTest(shared_ptr<GameObject> o)
 
 void Asteroid::OnCollision(const GameObjectList& objects)
 {
-	mCount--;
+	// removes the asteroid on collision
 	mWorld->FlagForRemoval(GetThisPtr());
-	CreateAsteroid(mScale, mShape);
-	CreateAsteroid(mScale, mShape);
-	mScale /= 2;
-	mShape /= 2;
+	// check the integer value count and if it is bigger than 0 creates 2 asteroids
+	if (mCount > 0) {
+		mCount--;
+		CreateAsteroid(mScale, mShape, mCount);
+		CreateAsteroid(mScale, mShape, mCount);
+		mScale /= 3;
+		mShape /= 3;
+	}
 }
 
-void Asteroid::CreateAsteroid(float scale, float shape) {
+// creates an asteroid gets a value scale and shape so we can decide how big our asteroid will be it also gets a value count so it can
+// keep track of how many times the asteroid got destroyed
+// sets the asteroids position, rotation and acceleration values to the asteroid that it is derived from (aka the asteroid that got destroyed and sets them to the new one)
+void Asteroid::CreateAsteroid(float scale, float shape, int count) {
 	Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("asteroid1");
 	shared_ptr<Sprite> asteroid_sprite
 		= make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
@@ -49,7 +58,12 @@ void Asteroid::CreateAsteroid(float scale, float shape) {
 	asteroid->SetBoundingShape(make_shared<BoundingSphere>(asteroid->GetThisPtr(), shape));
 	asteroid->SetSprite(asteroid_sprite);
 	asteroid->SetScale(scale);
-	asteroid->mScale = scale/2;
-	asteroid->mShape = shape/2;
+	asteroid->mScale = scale/3;
+	asteroid->mShape = shape/3;
+	asteroid->mCount = count;
+	asteroid->SetPosition(GetThisPtr()->GetPosition());
+	asteroid->SetRotation(GetThisPtr()->GetRotation());
+	asteroid->SetAcceleration(GetThisPtr()->GetAcceleration());
+	// adds the asteroid to the world
 	mWorld->AddObject(asteroid);
 }
