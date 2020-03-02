@@ -57,6 +57,7 @@ void Asteroids::Start()
 	Animation *explosion_anim = AnimationManager::GetInstance().CreateAnimationFromFile("explosion", 64, 1024, 64, 64, "explosion_fs.png");
 	Animation *asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
 	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
+	Animation *powerup_anim = AnimationManager::GetInstance().CreateAnimationFromFile("powerup", 256, 256, 256, 256, "heart.png");
 
 	// Create a spaceship and add it to the world
 	mGameWorld->AddObject(CreateSpaceship());
@@ -176,22 +177,23 @@ void Asteroids::OnTimer(int value)
 // PROTECTED INSTANCE METHODS /////////////////////////////////////////////////
 shared_ptr<GameObject> Asteroids::CreateSpaceship()
 {
-	// Create a raw pointer to a spaceship that can be converted to
-	// shared_ptrs of different types because GameWorld implements IRefCount
-	mSpaceship = make_shared<Spaceship>();
-	mSpaceship->SetBoundingShape(make_shared<BoundingSphere>(mSpaceship->GetThisPtr(), 4.0f));
-	shared_ptr<Shape> bullet_shape = make_shared<Shape>("bullet.shape");
-	mSpaceship->SetBulletShape(bullet_shape);
-	Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("spaceship");
-	shared_ptr<Sprite> spaceship_sprite =
-		make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
-	mSpaceship->SetSprite(spaceship_sprite);
-	mSpaceship->SetScale(0.1f);
-	// Reset spaceship back to centre of the world
-	mSpaceship->Reset();
-	// Return the spaceship so it can be added to the world
-	return mSpaceship;
-
+	{
+		// Create a raw pointer to a spaceship that can be converted to
+		// shared_ptrs of different types because GameWorld implements IRefCount
+		mSpaceship = make_shared<Spaceship>();
+		mSpaceship->SetBoundingShape(make_shared<BoundingSphere>(mSpaceship->GetThisPtr(), 4.0f));
+		shared_ptr<Shape> bullet_shape = make_shared<Shape>("bullet.shape");
+		mSpaceship->SetBulletShape(bullet_shape);
+		Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("spaceship");
+		shared_ptr<Sprite> spaceship_sprite =
+			make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+		mSpaceship->SetSprite(spaceship_sprite);
+		mSpaceship->SetScale(0.1f);
+		// Reset spaceship back to centre of the world
+		mSpaceship->Reset();
+		// Return the spaceship so it can be added to the world
+		return mSpaceship;
+	}
 }
 
 void Asteroids::CreateAsteroids(const uint num_asteroids)

@@ -5,6 +5,8 @@
 #include "AnimationManager.h"
 #include "Animation.h"
 #include "BoundingSphere.h"
+#include "PowerUp.h"
+
 
 Asteroid::Asteroid(void) : GameObject("Asteroid")
 {
@@ -65,5 +67,21 @@ void Asteroid::CreateAsteroid(float scale, float shape, int count) {
 	asteroid->SetRotation(GetThisPtr()->GetRotation());
 	asteroid->SetAcceleration(GetThisPtr()->GetAcceleration());
 	// adds the asteroid to the world
+	CreatePowerUp();
 	mWorld->AddObject(asteroid);
+}
+
+void Asteroid::CreatePowerUp() {
+	Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("powerup");
+	shared_ptr<Sprite> powerup_sprite
+		= make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+	powerup_sprite->SetLoopAnimation(true);
+	shared_ptr<PowerUp> powerup = make_shared<PowerUp>();
+	powerup->SetSprite(powerup_sprite);
+	powerup->SetScale(0.1f);
+	powerup->SetBoundingShape(make_shared<BoundingSphere>(powerup->GetThisPtr(), 0.1f));
+	powerup->SetPosition(GetThisPtr()->GetPosition());
+	// adds the pwerup to the world
+	mWorld->AddObject(powerup);
+
 }
