@@ -40,8 +40,13 @@ public:
 		}
 	}
 
-private:
+	void OneUp() {
+		mLives++;
+	}
+
 	int mLives;
+
+private:
 
 	typedef std::list< shared_ptr<IPlayerListener> > PlayerListenerList;
 

@@ -147,6 +147,15 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 			SetTimer(500, START_NEXT_LEVEL); 
 		}
 	}
+	if (object->GetType() == GameObjectType("PowerUp")) {
+		mPlayer.OneUp();
+		// Format the lives left message using an string-based stream
+		std::ostringstream msg_stream;
+		msg_stream << "Lives: " << mPlayer.mLives;
+		// Get the lives left message as a string
+		std::string lives_msg = msg_stream.str();
+		mLivesLabel->SetText(lives_msg);
+	}
 }
 
 // PUBLIC INSTANCE METHODS IMPLEMENTING ITimerListener ////////////////////////
