@@ -7,6 +7,7 @@ class Asteroid : public GameObject
 {
 public:
 	int mCount = 2;
+	int mRandom = 0;
 	float mScale = 0.1f;
 	float mShape = 5.0f;
 	Asteroid(void);
@@ -16,7 +17,7 @@ public:
 	void OnCollision(const GameObjectList& objects);
 
 	void AsteroidDestroyed(float scale, float shape, int count);
-	void CreatePowerUp();
+	void CreatePowerUp(int type);
 };
 
 #endif

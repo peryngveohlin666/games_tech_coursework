@@ -46,7 +46,13 @@ void Asteroid::OnCollision(const GameObjectList& objects)
 		mCount--;
 		AsteroidDestroyed(mScale, mShape, mCount);
 		AsteroidDestroyed(mScale, mShape, mCount);
-		CreatePowerUp();
+		mRandom = 0 + rand() % 10;
+		if (mRandom <= 2) {
+			CreatePowerUp(1);
+		}
+		if (mRandom >= 9) {
+			CreatePowerUp(2);
+		}
 		mScale /= 3;
 		mShape /= 3;
 	}
@@ -77,17 +83,31 @@ void Asteroid::AsteroidDestroyed(float scale, float shape, int count) {
 	mWorld->AddObject(asteroid);
 }
 
-void Asteroid::CreatePowerUp() {
-	Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("powerup");
-	shared_ptr<Sprite> powerup_sprite
-		= make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
-	powerup_sprite->SetLoopAnimation(true);
-	shared_ptr<PowerUp> powerup = make_shared<PowerUp>();
-	powerup->SetSprite(powerup_sprite);
-	powerup->SetScale(0.025f);
-	powerup->SetBoundingShape(make_shared<BoundingSphere>(powerup->GetThisPtr(), 0.1f));
-	powerup->SetPosition(GetThisPtr()->GetPosition());
-	// adds the pwerup to the world
-	mWorld->AddObject(powerup);
-
+void Asteroid::CreatePowerUp(int type) {
+	if (type == 1) {
+		Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("powerup");
+		shared_ptr<Sprite> powerup_sprite
+			= make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+		powerup_sprite->SetLoopAnimation(true);
+		shared_ptr<PowerUp> powerup = make_shared<PowerUp>();
+		powerup->SetSprite(powerup_sprite);
+		powerup->SetScale(0.025f);
+		powerup->SetBoundingShape(make_shared<BoundingSphere>(powerup->GetThisPtr(), 0.1f));
+		powerup->SetPosition(GetThisPtr()->GetPosition());
+		// adds the pwerup to the world
+		mWorld->AddObject(powerup);
+	}
+	if (type == 2) {
+		Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("powerup2");
+		shared_ptr<Sprite> powerup_sprite
+			= make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+		powerup_sprite->SetLoopAnimation(true);
+		shared_ptr<PowerUp> powerup = make_shared<PowerUp>();
+		powerup->SetSprite(powerup_sprite);
+		powerup->SetScale(0.030f);
+		powerup->SetBoundingShape(make_shared<BoundingSphere>(powerup->GetThisPtr(), 0.2f));
+		powerup->SetPosition(GetThisPtr()->GetPosition());
+		// adds the pwerup to the world
+		mWorld->AddObject(powerup);
+	}
 }

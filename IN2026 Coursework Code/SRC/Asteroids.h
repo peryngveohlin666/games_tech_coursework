@@ -47,10 +47,13 @@ public:
 	// Override the default implementation of ITimerListener ////////////////////
 	void OnTimer(int value);
 
+	int mLivesLeft;
+
 private:
 	shared_ptr<Spaceship> mSpaceship;
 	shared_ptr<GUILabel> mScoreLabel;
 	shared_ptr<GUILabel> mLivesLabel;
+	shared_ptr<GUILabel> mShieldLabel;
 	shared_ptr<GUILabel> mGameOverLabel;
 
 	uint mLevel;

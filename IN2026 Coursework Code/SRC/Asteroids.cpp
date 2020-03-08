@@ -58,6 +58,7 @@ void Asteroids::Start()
 	Animation *asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
 	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
 	Animation *powerup_anim = AnimationManager::GetInstance().CreateAnimationFromFile("powerup", 256, 256, 256, 256, "heart.png");
+	Animation *powerup2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("powerup2", 256, 256, 256, 256, "shield.png");
 
 	// Create a spaceship and add it to the world
 	mGameWorld->AddObject(CreateSpaceship());
@@ -142,19 +143,40 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 		explosion->SetRotation(object->GetRotation());
 		mGameWorld->AddObject(explosion);
 		mAsteroidCount--;
+		if (!mSpaceship->mShield) {
+			mLivesLeft = mPlayer.mLives;
+			// Format the lives left message using an string-based stream
+			std::ostringstream msg_stream;
+			msg_stream << "Lives: " << mLivesLeft;
+			// Get the lives left message as a string
+			std::string lives_msg = msg_stream.str();
+			mLivesLabel->SetText(lives_msg);
+		}
 		if (mAsteroidCount <= 0) 
 		{ 
 			SetTimer(500, START_NEXT_LEVEL); 
 		}
 	}
 	if (object->GetType() == GameObjectType("PowerUp")) {
-		mPlayer.OneUp();
-		// Format the lives left message using an string-based stream
-		std::ostringstream msg_stream;
-		msg_stream << "Lives: " << mPlayer.mLives;
-		// Get the lives left message as a string
-		std::string lives_msg = msg_stream.str();
-		mLivesLabel->SetText(lives_msg);
+		if (object->GetScale() == 0.025f) {
+			mPlayer.OneUp();
+			// Format the lives left message using an string-based stream
+			std::ostringstream msg_stream;
+			msg_stream << "Lives: " << mPlayer.mLives;
+			// Get the lives left message as a string
+			std::string lives_msg = msg_stream.str();
+			mLivesLabel->SetText(lives_msg);
+		}
+		if (object->GetScale() == 0.030f) {
+			mPlayer.mShield = true;
+			mSpaceship->mShield = true;
+			// Format the lives left message using an string-based stream
+			std::ostringstream msg_stream;
+			msg_stream << "Shields: ON";
+			// Get the lives left message as a string
+			std::string lives_msg = msg_stream.str();
+			mLivesLabel->SetText(lives_msg);
+		}
 	}
 }
 

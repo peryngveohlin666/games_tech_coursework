@@ -11,7 +11,10 @@
 class Player : public IGameWorldListener
 {
 public:
-	Player() { mLives = 3; }
+	Player() { 
+		mLives = 3; 
+		mShield = false;
+	}
 	virtual ~Player() {}
 
 	void OnWorldUpdated(GameWorld* world) {}
@@ -21,8 +24,14 @@ public:
 	void OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 	{
 		if (object->GetType() == GameObjectType("Spaceship")) {
-			mLives -= 1;
-			FirePlayerKilled();
+			if (!mShield) {
+				mLives -= 1;
+				FirePlayerKilled();
+			}
+			if (mShield) {
+				mShield = false;
+				FirePlayerKilled();
+			}
 		}
 	}
 
@@ -45,6 +54,7 @@ public:
 	}
 
 	int mLives;
+	bool mShield;
 
 private:
 
