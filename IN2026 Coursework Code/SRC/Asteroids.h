@@ -9,6 +9,7 @@
 #include "ScoreKeeper.h"
 #include "Player.h"
 #include "IPlayerListener.h"
+#include "AlienSpaceship.h"
 
 class GameObject;
 class Spaceship;
@@ -51,6 +52,7 @@ public:
 
 private:
 	shared_ptr<Spaceship> mSpaceship;
+	shared_ptr<AlienSpaceship> mAlien;
 	shared_ptr<GUILabel> mScoreLabel;
 	shared_ptr<GUILabel> mLivesLabel;
 	shared_ptr<GUILabel> mShieldLabel;
@@ -63,12 +65,13 @@ private:
 	shared_ptr<GameObject> CreateSpaceship();
 	void CreateGUI();
 	void CreateAsteroids(const uint num_asteroids);
-	void CreateEnemies(const uint numb_enemies);
+	shared_ptr<AlienSpaceship> CreateAlien();
 	shared_ptr<GameObject> CreateExplosion();
 	
 	const static uint SHOW_GAME_OVER = 0;
 	const static uint START_NEXT_LEVEL = 1;
 	const static uint CREATE_NEW_PLAYER = 2;
+	const static uint SHOOT = 3;
 
 	ScoreKeeper mScoreKeeper;
 	Player mPlayer;

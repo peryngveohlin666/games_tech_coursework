@@ -3,6 +3,7 @@
 #include "Bullet.h"
 #include "Spaceship.h"
 #include "BoundingSphere.h"
+#include "BoundingShape.h"
 
 using namespace std;
 
@@ -94,7 +95,7 @@ void Spaceship::Shoot(void)
 
 bool Spaceship::CollisionTest(shared_ptr<GameObject> o)
 {
-	if (o->GetType() != GameObjectType("Asteroid")) return false;
+	if (GetType() == o->GetType()) return false;
 	if (mBoundingShape.get() == NULL) return false;
 	if (o->GetBoundingShape().get() == NULL) return false;
 	return mBoundingShape->CollisionTest(o->GetBoundingShape());
@@ -102,10 +103,14 @@ bool Spaceship::CollisionTest(shared_ptr<GameObject> o)
 
 void Spaceship::OnCollision(const GameObjectList &objects)
 {
-	if (!mShield) {
-		mWorld->FlagForRemoval(GetThisPtr());
-	}
-	if (mShield) {
-		mShield = false;
+	for (auto object : objects) {
+		if (object->GetType() == GameObjectType("Bullet") || object->GetType() == GameObjectType("Asteroid")) {
+			if (!mShield) {
+				mWorld->FlagForRemoval(GetThisPtr());
+			}
+			if (mShield) {
+				mShield = false;
+			}
+		}
 	}
 }
