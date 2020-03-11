@@ -159,13 +159,16 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 	}
 	if (object->GetType() == GameObjectType("PowerUp")) {
 		if (object->GetScale() == 0.025f) {
-			mPlayer.OneUp();
-			// Format the lives left message using an string-based stream
-			std::ostringstream msg_stream;
-			msg_stream << "Lives: " << mPlayer.mLives;
-			// Get the lives left message as a string
-			std::string lives_msg = msg_stream.str();
-			mLivesLabel->SetText(lives_msg);
+				mPlayer.OneUp();
+				mSpaceship->mShield = false;
+				mPlayer.mShield = false;
+
+				// Format the lives left message using an string-based stream
+				std::ostringstream msg_stream;
+				msg_stream << "Lives: " << mPlayer.mLives;
+				// Get the lives left message as a string
+				std::string lives_msg = msg_stream.str();
+				mLivesLabel->SetText(lives_msg);
 		}
 		if (object->GetScale() == 0.030f) {
 			mPlayer.mShield = true;

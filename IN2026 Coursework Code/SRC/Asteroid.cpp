@@ -94,7 +94,7 @@ void Asteroid::CreatePowerUp(int type) {
 		powerup->SetScale(0.025f);
 		powerup->SetBoundingShape(make_shared<BoundingSphere>(powerup->GetThisPtr(), 0.1f));
 		powerup->SetPosition(GetThisPtr()->GetPosition());
-		// adds the pwerup to the world
+		// adds the powerup to the world
 		mWorld->AddObject(powerup);
 	}
 	if (type == 2) {
@@ -107,7 +107,7 @@ void Asteroid::CreatePowerUp(int type) {
 		powerup->SetScale(0.030f);
 		powerup->SetBoundingShape(make_shared<BoundingSphere>(powerup->GetThisPtr(), 0.2f));
 		powerup->SetPosition(GetThisPtr()->GetPosition());
-		// adds the pwerup to the world
+		// adds the powerup to the world
 		mWorld->AddObject(powerup);
 	}
 }
