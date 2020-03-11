@@ -10,6 +10,7 @@
 #include "BoundingShape.h"
 #include "BoundingSphere.h"
 #include "GUILabel.h"
+#include "AlienSpaceship.h"
 #include "Explosion.h"
 
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
@@ -59,11 +60,13 @@ void Asteroids::Start()
 	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
 	Animation *powerup_anim = AnimationManager::GetInstance().CreateAnimationFromFile("powerup", 256, 256, 256, 256, "heart.png");
 	Animation *powerup2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("powerup2", 256, 256, 256, 256, "shield.png");
+	Animation *alien_spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("alienspaceship", 128, 8192, 128, 128, "enemy_fs.png");
 
 	// Create a spaceship and add it to the world
 	mGameWorld->AddObject(CreateSpaceship());
 	// Create some asteroids and add them to the world
 	CreateAsteroids(1);
+	CreateEnemies(1);
 
 	//Create the GUI
 	CreateGUI();
@@ -199,7 +202,9 @@ void Asteroids::OnTimer(int value)
 	// made the game a bit easier since the splitting asteroids make stuff really hard
 	int num_asteroids = 2*mLevel;
 	CreateAsteroids(num_asteroids);
+	CreateEnemies(mLevel);
 	}
+
 
 	if (value == SHOW_GAME_OVER)
 	{
@@ -245,6 +250,24 @@ void Asteroids::CreateAsteroids(const uint num_asteroids)
 		asteroid->SetSprite(asteroid_sprite);
 		asteroid->SetScale(0.2f);
 		mGameWorld->AddObject(asteroid);
+	}
+}
+
+void Asteroids::CreateEnemies(const uint numb_enemies) {
+	for (uint i = 0; i < numb_enemies; i++)
+	{
+	Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("alienspaceship");
+	shared_ptr<Sprite> alien_spaceship_sprite
+		= make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+	alien_spaceship_sprite->SetLoopAnimation(true);
+	shared_ptr<AlienSpaceship> alien_spaceship = make_shared<AlienSpaceship>();
+	alien_spaceship->SetBoundingShape(make_shared<BoundingSphere>(alien_spaceship->GetThisPtr(), 10.0f));
+	shared_ptr<Shape> bullet_shape = make_shared<Shape>("bullet.shape");
+	alien_spaceship->SetBulletShape(bullet_shape);
+	alien_spaceship->SetSprite(alien_spaceship_sprite);
+	alien_spaceship->SetScale(0.2f);
+	mGameWorld->AddObject(alien_spaceship);
+	alien_spaceship->Shoot();
 	}
 }
 

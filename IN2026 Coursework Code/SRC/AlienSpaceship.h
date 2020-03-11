@@ -1,22 +1,74 @@
-#ifndef __ALIENSPACESHIP_H__
-#define __ALIENSPACESHIP_H__
+#pragma once
 
-#include "GameUtil.h"
 #include "GameObject.h"
-#include "Shape.h"
+#include "PowerUp.h"
+#include <stdlib.h>
+#include "GameUtil.h"
+#include "BoundingShape.h"
+#include "AnimationManager.h"
+#include "Animation.h"
+#include "BoundingSphere.h"
+#include "GameWorld.h"
+#include "Bullet.h"
+
 
 class AlienSpaceship : public GameObject
 {
 public:
-	AlienSpaceship();
-	AlienSpaceship(GLVector3f p, GLVector3f v, GLVector3f a, GLfloat h, GLfloat r);
-	virtual ~AlienSpaceship(void);
+	AlienSpaceship(void) : GameObject("AlienSpaceship") {
+		mAngle = rand() % 180;
+		mRotation = 0;
+		mPosition.x = rand() / 2;
+		mPosition.y = rand() / 2;
+		mPosition.z = 0.0;
+		mVelocity.x = 10.0 * cos(DEG2RAD*mAngle);
+		mVelocity.y = 10.0 * sin(DEG2RAD*mAngle);
+		mVelocity.z = 0.0;
+	}
+	~AlienSpaceship(void) {
 
-	virtual void Update(int t);
-	virtual void Render(void);
+	}
 
-	float mThrust;
+	bool CollisionTest(shared_ptr<GameObject> o) {
+		if (GetType() == o->GetType()) return false;
+		if (mBoundingShape.get() == NULL) return false;
+		if (o->GetBoundingShape().get() == NULL) return false;
+		return mBoundingShape->CollisionTest(o->GetBoundingShape());
+	}
+	void OnCollision(const GameObjectList& objects) {
+		for (auto object : objects) {
+			if (object->GetType() == GameObjectType("Bullet"))
+			{
+				mWorld->FlagForRemoval(GetThisPtr());
+			}
+		}
+	}
+
+	/** Shoot a bullet. */
+	void Shoot(void)
+	{
+		// Check the world exists
+		if (!mWorld) return;
+		// Construct a unit length vector in the direction the spaceship is headed
+		GLVector3f spaceship_heading(cos(DEG2RAD*mAngle), sin(DEG2RAD*mAngle), 0);
+		spaceship_heading.normalize();
+		// Calculate the point at the node of the spaceship from position and heading
+		GLVector3f bullet_position = mPosition + (spaceship_heading * 100);
+		// Calculate how fast the bullet should travel
+		float bullet_speed = 30;
+		// Construct a vector for the bullet's velocity
+		GLVector3f bullet_velocity = mVelocity + spaceship_heading * bullet_speed;
+		// Construct a new bullet
+		shared_ptr<GameObject> bullet
+		(new Bullet(bullet_position, bullet_velocity, mAcceleration, mAngle, 0, 2000));
+		bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 2.0f));
+		bullet->SetShape(mBulletShape);
+		// Add the new bullet to the game world
+		mWorld->AddObject(bullet);
+
+	}
+
+	void SetBulletShape(shared_ptr<Shape> bullet_shape) { mBulletShape = bullet_shape; }
+
+	shared_ptr<Shape> mBulletShape;
 };
-
-
-#endif
