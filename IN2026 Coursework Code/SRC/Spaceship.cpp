@@ -78,7 +78,7 @@ void Spaceship::Shoot(void)
 	GLVector3f spaceship_heading(cos(DEG2RAD*mAngle), sin(DEG2RAD*mAngle), 0);
 	spaceship_heading.normalize();
 	// Calculate the point at the node of the spaceship from position and heading
-	GLVector3f bullet_position = mPosition + (spaceship_heading * 4);
+	GLVector3f bullet_position = mPosition + (spaceship_heading * 8);
 	// Calculate how fast the bullet should travel
 	float bullet_speed = 30;
 	// Construct a vector for the bullet's velocity

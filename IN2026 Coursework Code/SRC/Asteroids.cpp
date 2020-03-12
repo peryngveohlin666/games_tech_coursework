@@ -66,8 +66,8 @@ void Asteroids::Start()
 	mGameWorld->AddObject(CreateSpaceship());
 	// Create some asteroids and add them to the world
 	CreateAsteroids(1);
-	mAlien = CreateAlien();	
-	SetTimer(500, SHOOT);
+	mAlien = CreateAlien();
+	SetTimer(1000, SHOOT);
 
 	//Create the GUI
 	CreateGUI();
@@ -162,8 +162,14 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 		}
 	}
 	if (object->GetType() == GameObjectType("PowerUp")) {
+
+		//whenever the object is a health power up
 		if (object->GetScale() == 0.025f) {
+
+			//give the player another live
 				mPlayer.OneUp();
+
+				//set the shields for false (I think the other way it was too easy and i would need both a health text and a shields one which takes too much screen space)
 				mSpaceship->mShield = false;
 				mPlayer.mShield = false;
 
@@ -174,10 +180,11 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 				std::string lives_msg = msg_stream.str();
 				mLivesLabel->SetText(lives_msg);
 		}
+		//whenever the object is a shield power up
 		if (object->GetScale() == 0.030f) {
 			mPlayer.mShield = true;
 			mSpaceship->mShield = true;
-			// Format the lives left message using an string-based stream
+			// Format the lives left message using an string-based stream (turns it into Shields ON as I think another text would take too much screen space)
 			std::ostringstream msg_stream;
 			msg_stream << "Shields: ON";
 			// Get the lives left message as a string
@@ -185,6 +192,14 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 			mLivesLabel->SetText(lives_msg);
 		}
 	}
+	//creates an explosion when the 
+	if (object->GetType() == GameObjectType("AlienSpaceship")) {
+		shared_ptr<GameObject> explosion = CreateExplosion();
+		explosion->SetPosition(object->GetPosition());
+		explosion->SetRotation(object->GetRotation());
+		mGameWorld->AddObject(explosion);
+	}
+	
 }
 
 // PUBLIC INSTANCE METHODS IMPLEMENTING ITimerListener ////////////////////////
@@ -215,7 +230,7 @@ void Asteroids::OnTimer(int value)
 	if  (value == SHOOT)
 	{
 		mAlien->Shoot(mSpaceship);
-		SetTimer(500, SHOOT);
+		SetTimer(1000, SHOOT);
 	}
 
 }
@@ -272,7 +287,6 @@ shared_ptr<AlienSpaceship> Asteroids::CreateAlien() {
 	alien_spaceship->SetSprite(alien_spaceship_sprite);
 	alien_spaceship->SetScale(0.1f);
 	mGameWorld->AddObject(alien_spaceship);
-	alien_spaceship->Shoot(mSpaceship);
 	return alien_spaceship;
 }
 

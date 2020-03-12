@@ -42,6 +42,7 @@ public:
 			if (object->GetType() == GameObjectType("Bullet"))
 			{
 				mWorld->FlagForRemoval(GetThisPtr());
+
 			}
 		}
 	}
@@ -49,30 +50,35 @@ public:
 	/** Shoot a bullet. */
 	void Shoot(shared_ptr<GameObject> o)
 	{
-		// Check the world exists
-		if (!mWorld) return;
+		//to give a randomised feeling to the shooting I only make 8 out of 10 bullets to actually shoot
+		mRandom = rand() % 11;
+		if (mRandom <= 8) {
+			// Check the world exists
+			if (!mWorld) return;
 
-		auto SpaceShipPos = o->GetPosition();
+			auto SpaceShipPos = o->GetPosition();
 
-		GLVector3f diff = SpaceShipPos - mPosition;
+			GLVector3f diff = SpaceShipPos - mPosition;
 
 
-		// Construct a unit length vector in the direction the spaceship is headed
-		GLVector3f spaceship_shooting = diff;
-		spaceship_shooting.normalize();
-		// Calculate the point at the node of the spaceship from position and heading
-		GLVector3f bullet_position = mPosition + (spaceship_shooting * 10);
-		// Calculate how fast the bullet should travel
-		float bullet_speed = 30;
-		// Construct a vector for the bullet's velocity
-		GLVector3f bullet_velocity = mVelocity + spaceship_shooting * bullet_speed;
-		// Construct a new bullet
-		shared_ptr<GameObject> bullet
-		(new Bullet(bullet_position, bullet_velocity, mAcceleration, 0, 0, 2000));
-		bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 2.0f));
-		bullet->SetShape(mBulletShape);
-		// Add the new bullet to the game world
-		mWorld->AddObject(bullet);
+			// Construct a unit length vector in the direction the spaceship is headed
+			GLVector3f spaceship_shooting = diff;
+			spaceship_shooting.normalize();
+			// Calculate the point at the node of the spaceship from position and heading
+			GLVector3f bullet_position = mPosition + (spaceship_shooting * 10);
+			// Calculate how fast the bullet should travel
+			float bullet_speed = 30;
+			// Construct a vector for the bullet's velocity
+			GLVector3f bullet_velocity = mVelocity + spaceship_shooting * bullet_speed;
+			// Construct a new bullet
+			// Set the angle here to a randomised value because otherwise it is impossible to play against
+			shared_ptr<GameObject> bullet
+			(new Bullet(bullet_position, bullet_velocity, mAcceleration, rand() % 120, 0, 2000));
+			bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 2.0f));
+			bullet->SetShape(mBulletShape);
+			// Add the new bullet to the game world
+			mWorld->AddObject(bullet);
+		}
 
 	}
 
@@ -85,4 +91,5 @@ public:
 	void SetBulletShape(shared_ptr<Shape> bullet_shape) { mBulletShape = bullet_shape; }
 
 	shared_ptr<Shape> mBulletShape;
+	int mRandom;
 };
