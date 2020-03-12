@@ -13,6 +13,7 @@ class Player : public IGameWorldListener
 public:
 	Player() { 
 		mLives = 3; 
+		//to check if the shields are up
 		mShield = false;
 	}
 	virtual ~Player() {}
@@ -23,12 +24,16 @@ public:
 
 	void OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 	{
+		//checks if the collision is with a spaceship
 		if (object->GetType() == GameObjectType("Spaceship")) {
+			//checks if the shields are not up
 			if (!mShield) {
+				//if shields are not up you lose a life and die
 				mLives -= 1;
 				FirePlayerKilled();
 			}
 			if (mShield) {
+				//if shields are up you just live we fire the player killed still but we have tweaked it so that the character does not die
 				mShield = false;
 				FirePlayerKilled();
 			}
@@ -54,6 +59,7 @@ public:
 	}
 
 	int mLives;
+	//to determine if the shields are up for the player class
 	bool mShield;
 
 private:

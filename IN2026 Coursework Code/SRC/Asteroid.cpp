@@ -36,7 +36,9 @@ bool Asteroid::CollisionTest(shared_ptr<GameObject> o)
 
 void Asteroid::OnCollision(const GameObjectList& objects)
 {
+	//traverses through all the objects
 	for (auto object : objects) {
+		//if it collides with a powerup doesn't remove the asteroid
 		if (object->GetType() != GameObjectType("PowerUp"))
 		{
 			// removes the asteroid on collision

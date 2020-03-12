@@ -14,8 +14,11 @@
 
 class AlienSpaceship : public GameObject
 {
+
+	//default constructor with default values
 public:
 	AlienSpaceship(void) : GameObject("AlienSpaceship") {
+		//the angle is 180 + random mod 10 because i don't want it to be upside down
 		mAngle = 180 + rand() % 10;
 		mRotation = 0;
 		mPosition.x = rand() / 2;
@@ -25,18 +28,22 @@ public:
 		mVelocity.y = 10.0 * sin(DEG2RAD*mAngle);
 		mVelocity.z = 0.0;
 	}
+
+	//default destructor
 	~AlienSpaceship(void) {
 
 	}
 
 	bool CollisionTest(shared_ptr<GameObject> o)
 	{
+		//if the object is not a bullet doesn't return collision data so the alien only gets damaged by the bullets of us
 		if (o->GetType() != GameObjectType("Bullet")) return false;
 		if (mBoundingShape.get() == NULL) return false;
 		if (o->GetBoundingShape().get() == NULL) return false;
 		return mBoundingShape->CollisionTest(o->GetBoundingShape());
 	}
 
+	//checks if the alien spaceship is shot and destroys it
 	void OnCollision(const GameObjectList& objects) {
 		for (auto object : objects) {
 			if (object->GetType() == GameObjectType("Bullet"))
@@ -88,8 +95,11 @@ public:
 		GameObject::Update(t);
 	}
 
+	//to set a bullet shape from a .shape file as i am using the normal bullet class
 	void SetBulletShape(shared_ptr<Shape> bullet_shape) { mBulletShape = bullet_shape; }
 
+	//a smart pointer to bulletshape
 	shared_ptr<Shape> mBulletShape;
+	//a random integer value, just keeping this for computational efficiency on occassions
 	int mRandom;
 };

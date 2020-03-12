@@ -55,6 +55,7 @@ void Asteroids::Start()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
 	glEnable(GL_LIGHT0);
 
+	//creating animations or getting sprites and creating objects from them to be used
 	Animation *explosion_anim = AnimationManager::GetInstance().CreateAnimationFromFile("explosion", 64, 1024, 64, 64, "explosion_fs.png");
 	Animation *asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
 	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
@@ -66,7 +67,10 @@ void Asteroids::Start()
 	mGameWorld->AddObject(CreateSpaceship());
 	// Create some asteroids and add them to the world
 	CreateAsteroids(1);
+
+	//creates an alien and intiializes it to the member
 	mAlien = CreateAlien();
+	//starts the recursive shooting timer but with the value 1000 to give a startup time (also the bullets sometimes don't render right away and you get shot by invisible beams) basically starts making our alien shoot!
 	SetTimer(1000, SHOOT);
 
 	//Create the GUI
@@ -156,6 +160,7 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 			std::string lives_msg = msg_stream.str();
 			mLivesLabel->SetText(lives_msg);
 		}
+		//if no asteroids left starts the next level
 		if (mAsteroidCount <= 0) 
 		{ 
 			SetTimer(500, START_NEXT_LEVEL); 
@@ -192,7 +197,7 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 			mLivesLabel->SetText(lives_msg);
 		}
 	}
-	//creates an explosion when the 
+	//creates an explosion when the alien spaceship gets destroyed
 	if (object->GetType() == GameObjectType("AlienSpaceship")) {
 		shared_ptr<GameObject> explosion = CreateExplosion();
 		explosion->SetPosition(object->GetPosition());
@@ -218,6 +223,7 @@ void Asteroids::OnTimer(int value)
 	// made the game a bit easier since the splitting asteroids make stuff really hard
 	int num_asteroids = 2*mLevel;
 	CreateAsteroids(num_asteroids);
+	//readds the alien to the world on the next level
 	mGameWorld->AddObject(mAlien);
 	}
 
@@ -227,6 +233,7 @@ void Asteroids::OnTimer(int value)
 		mGameOverLabel->SetVisible(true);
 	}
 
+	//shoots and recursively sets a timer to shoot again for the alien
 	if  (value == SHOOT)
 	{
 		mAlien->Shoot(mSpaceship);
@@ -275,18 +282,29 @@ void Asteroids::CreateAsteroids(const uint num_asteroids)
 	}
 }
 
+/*
+A function to create an alien spaceship object
+*/
 shared_ptr<AlienSpaceship> Asteroids::CreateAlien() {
+	//initializes the sprite and the animation
 	Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("alienspaceship");
 	shared_ptr<Sprite> alien_spaceship_sprite
 		= make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
 	alien_spaceship_sprite->SetLoopAnimation(true);
+	//creates a smart pointer that is pointing to a new instance of the class AlienSpaceShip
 	shared_ptr<AlienSpaceship> alien_spaceship = make_shared<AlienSpaceship>();
+	//sets the hitbox
 	alien_spaceship->SetBoundingShape(make_shared<BoundingSphere>(alien_spaceship->GetThisPtr(), 4.0f));
+	//sets the sprite for the bullets
 	shared_ptr<Shape> bullet_shape = make_shared<Shape>("bullet.shape");
+	//sets the shape for the bulet
 	alien_spaceship->SetBulletShape(bullet_shape);
+	//sets the sprite
 	alien_spaceship->SetSprite(alien_spaceship_sprite);
 	alien_spaceship->SetScale(0.1f);
+	//ads the spaceship to the world
 	mGameWorld->AddObject(alien_spaceship);
+	//returns a pointer to it
 	return alien_spaceship;
 }
 

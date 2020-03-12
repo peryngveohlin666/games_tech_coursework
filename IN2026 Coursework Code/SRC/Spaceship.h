@@ -27,6 +27,7 @@ public:
 	bool CollisionTest(shared_ptr<GameObject> o);
 	void OnCollision(const GameObjectList &objects);
 
+	//to check shields for the spaceship class
 	bool mShield = false;
 
 private:

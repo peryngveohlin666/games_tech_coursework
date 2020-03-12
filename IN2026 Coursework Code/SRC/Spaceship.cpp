@@ -103,6 +103,7 @@ bool Spaceship::CollisionTest(shared_ptr<GameObject> o)
 
 void Spaceship::OnCollision(const GameObjectList &objects)
 {
+	// traverses through the objects if collision is with a bullet or an asteroid first checks if the shields are up if not destroys the spaceship
 	for (auto object : objects) {
 		if (object->GetType() == GameObjectType("Bullet") || object->GetType() == GameObjectType("Asteroid")) {
 			if (!mShield) {
