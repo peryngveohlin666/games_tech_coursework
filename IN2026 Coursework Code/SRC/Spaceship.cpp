@@ -90,6 +90,23 @@ void Spaceship::Shoot(void)
 	bullet->SetShape(mBulletShape);
 	// Add the new bullet to the game world
 	mWorld->AddObject(bullet);
+	
+	//checks if the shooting powerup is activated
+	if(mSuperShoot){
+		//creates two new bullets if the powerups is activated with the same position and different angles
+		//to give a powerup of three bullets
+		shared_ptr<GameObject> bullet
+		(new Bullet(bullet_position, bullet_velocity, mAcceleration, mAngle - 60, 0, 2000));
+		bullet->SetBoundingShape(make_shared<BoundingSphere>(bullet->GetThisPtr(), 2.0f));
+		bullet->SetShape(mBulletShape);
+		mWorld->AddObject(bullet);
+		shared_ptr<GameObject> bullet2
+		(new Bullet(bullet_position, bullet_velocity, mAcceleration, mAngle + 60, 0, 2000));
+		bullet2->SetBoundingShape(make_shared<BoundingSphere>(bullet2->GetThisPtr(), 2.0f));
+		bullet2->SetShape(mBulletShape);
+		mWorld->AddObject(bullet2);
+
+	}
 
 }
 
@@ -103,9 +120,9 @@ bool Spaceship::CollisionTest(shared_ptr<GameObject> o)
 
 void Spaceship::OnCollision(const GameObjectList &objects)
 {
-	// traverses through the objects if collision is with a bullet or an asteroid first checks if the shields are up if not destroys the spaceship
+	// traverses through the objects if collision is with a bullet an asteroid or the enemy spaceship first checks if the shields are up if not destroys the spaceship
 	for (auto object : objects) {
-		if (object->GetType() == GameObjectType("Bullet") || object->GetType() == GameObjectType("Asteroid")) {
+		if (object->GetType() == GameObjectType("Bullet") || object->GetType() == GameObjectType("Asteroid") || object->GetType() == GameObjectType("AlienSpaceship")) {
 			if (!mShield) {
 				mWorld->FlagForRemoval(GetThisPtr());
 			}

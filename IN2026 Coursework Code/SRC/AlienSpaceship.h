@@ -74,7 +74,7 @@ public:
 			// Calculate the point at the node of the spaceship from position and heading
 			GLVector3f bullet_position = mPosition + (spaceship_shooting * 10);
 			// Calculate how fast the bullet should travel
-			float bullet_speed = 30;
+			float bullet_speed = 40;
 			// Construct a vector for the bullet's velocity
 			GLVector3f bullet_velocity = mVelocity + spaceship_shooting * bullet_speed;
 			// Construct a new bullet
@@ -87,9 +87,9 @@ public:
 			mWorld->AddObject(bullet);
 
 			//also follows the enemy (I mean it is a part of shooting)
-			// it is diff/2 so it slows down as it gets closer rather than a constant slow value which gives it a more realistic way of
+			// it is diff/5 so it slows down as it gets closer rather than a constant slow value which gives it a more realistic way of
 			// coming its way to hunt us down
-			mVelocity = diff/2;
+			mVelocity = diff/3;
 		}
 
 	}

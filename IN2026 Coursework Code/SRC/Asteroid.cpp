@@ -56,6 +56,9 @@ void Asteroid::OnCollision(const GameObjectList& objects)
 		if (mRandom >= 9) {
 			CreatePowerUp(2);
 		}
+		if (mRandom == 7) {
+			CreatePowerUp(3);
+		}
 		//we set the values for scale and shape one third of the previous one so the asteroids will be smaller each time
 		mScale /= 3;
 		mShape /= 3;
@@ -120,6 +123,21 @@ void Asteroid::CreatePowerUp(int type) {
 		shared_ptr<PowerUp> powerup = make_shared<PowerUp>();
 		powerup->SetSprite(powerup_sprite);
 		powerup->SetScale(0.030f);
+		//setting the hitbox
+		powerup->SetBoundingShape(make_shared<BoundingSphere>(powerup->GetThisPtr(), 0.2f));
+		powerup->SetPosition(GetThisPtr()->GetPosition());
+		// adds the powerup to the world
+		mWorld->AddObject(powerup);
+	}
+	if (type == 3) {
+		//setting the sprite
+		Animation *anim_ptr = AnimationManager::GetInstance().GetAnimationByName("powerup3");
+		shared_ptr<Sprite> powerup_sprite
+			= make_shared<Sprite>(anim_ptr->GetWidth(), anim_ptr->GetHeight(), anim_ptr);
+		powerup_sprite->SetLoopAnimation(true);
+		shared_ptr<PowerUp> powerup = make_shared<PowerUp>();
+		powerup->SetSprite(powerup_sprite);
+		powerup->SetScale(0.027f);
 		//setting the hitbox
 		powerup->SetBoundingShape(make_shared<BoundingSphere>(powerup->GetThisPtr(), 0.2f));
 		powerup->SetPosition(GetThisPtr()->GetPosition());

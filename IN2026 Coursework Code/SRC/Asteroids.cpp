@@ -61,6 +61,7 @@ void Asteroids::Start()
 	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 128, 128, 128, 128, "spaceship_fs.png");
 	Animation *powerup_anim = AnimationManager::GetInstance().CreateAnimationFromFile("powerup", 256, 256, 256, 256, "heart.png");
 	Animation *powerup2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("powerup2", 256, 256, 256, 256, "shield.png");
+	Animation *powerup3_anim = AnimationManager::GetInstance().CreateAnimationFromFile("powerup3", 256, 256, 256, 256, "laser.png");
 	Animation *alien_spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("alienspaceship", 128, 8192, 128, 128, "enemy_fs.png");
 
 	// Create a spaceship and add it to the world
@@ -195,6 +196,10 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 			// Get the lives left message as a string
 			std::string lives_msg = msg_stream.str();
 			mLivesLabel->SetText(lives_msg);
+		}
+		//whenever it is a laser power up
+		if (object->GetScale() == 0.027f) {
+			mSpaceship->mSuperShoot = true;
 		}
 	}
 	//creates an explosion when the alien spaceship gets destroyed

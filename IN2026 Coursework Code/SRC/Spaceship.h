@@ -30,6 +30,9 @@ public:
 	//to check shields for the spaceship class
 	bool mShield = false;
 
+	//to check for the shooting power up
+	bool mSuperShoot = false;
+
 private:
 	float mThrust;
 
