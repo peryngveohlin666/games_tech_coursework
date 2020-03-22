@@ -85,6 +85,11 @@ public:
 			bullet->SetShape(mBulletShape);
 			// Add the new bullet to the game world
 			mWorld->AddObject(bullet);
+
+			//also follows the enemy (I mean it is a part of shooting)
+			// it is diff/2 so it slows down as it gets closer rather than a constant slow value which gives it a more realistic way of
+			// coming its way to hunt us down
+			mVelocity = diff/2;
 		}
 
 	}
@@ -93,6 +98,7 @@ public:
 	{
 		// Call parent update function
 		GameObject::Update(t);
+
 	}
 
 	//to set a bullet shape from a .shape file as i am using the normal bullet class
